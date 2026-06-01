@@ -1,0 +1,9 @@
+# Never upload these
+.env
+db/
+__pycache__/
+*.pyc
+.DS_Store
+venv/
+*.egg-info/
+documents/

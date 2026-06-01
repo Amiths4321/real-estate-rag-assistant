@@ -1,0 +1,292 @@
+
+<style>
+  .step-nav { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:1.5rem; }
+  .step-pill { padding:6px 14px; border-radius:20px; font-size:13px; font-weight:500; border:0.5px solid var(--color-border-secondary); background:var(--color-background-secondary); color:var(--color-text-secondary); cursor:pointer; transition:all .2s; }
+  .step-pill.active { background:var(--color-background-info); color:var(--color-text-info); border-color:var(--color-border-info); }
+  .step-pill.done { background:var(--color-background-success); color:var(--color-text-success); border-color:var(--color-border-success); }
+  .step-card { display:none; background:var(--color-background-primary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:1.25rem; }
+  .step-card.visible { display:block; }
+  .step-header { display:flex; align-items:center; gap:12px; margin-bottom:1rem; }
+  .step-num { width:36px; height:36px; border-radius:50%; background:var(--color-background-info); color:var(--color-text-info); font-size:15px; font-weight:500; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .step-title { font-size:17px; font-weight:500; color:var(--color-text-primary); }
+  .step-week { font-size:12px; color:var(--color-text-secondary); margin-top:2px; }
+  .task-list { list-style:none; padding:0; margin:0 0 1rem; }
+  .task-list li { display:flex; align-items:flex-start; gap:10px; padding:8px 0; border-bottom:0.5px solid var(--color-border-tertiary); font-size:14px; color:var(--color-text-primary); }
+  .task-list li:last-child { border-bottom:none; }
+  .task-check { width:18px; height:18px; border-radius:4px; border:0.5px solid var(--color-border-secondary); background:var(--color-background-secondary); cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; transition:all .15s; }
+  .task-check.checked { background:var(--color-background-success); border-color:var(--color-border-success); }
+  .task-check.checked::after { content:'✓'; font-size:11px; color:var(--color-text-success); }
+  .code-block { background:var(--color-background-secondary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-md); padding:1rem; font-family:var(--font-mono); font-size:12px; color:var(--color-text-primary); white-space:pre; overflow-x:auto; margin:0.75rem 0; line-height:1.6; }
+  .cmd { background:var(--color-background-secondary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-md); padding:8px 12px; font-family:var(--font-mono); font-size:12px; color:var(--color-text-info); margin:6px 0; display:block; }
+  .tip-box { background:var(--color-background-warning); border:0.5px solid var(--color-border-warning); border-radius:var(--border-radius-md); padding:10px 14px; font-size:13px; color:var(--color-text-warning); margin:0.75rem 0; }
+  .info-box { background:var(--color-background-info); border:0.5px solid var(--color-border-info); border-radius:var(--border-radius-md); padding:10px 14px; font-size:13px; color:var(--color-text-info); margin:0.75rem 0; }
+  .success-box { background:var(--color-background-success); border:0.5px solid var(--color-border-success); border-radius:var(--border-radius-md); padding:10px 14px; font-size:13px; color:var(--color-text-success); margin:0.75rem 0; }
+  .nav-btns { display:flex; justify-content:space-between; margin-top:1.25rem; }
+  .nav-btn { padding:8px 20px; border-radius:var(--border-radius-md); border:0.5px solid var(--color-border-secondary); background:var(--color-background-secondary); color:var(--color-text-primary); font-size:13px; cursor:pointer; transition:all .15s; }
+  .nav-btn:hover { background:var(--color-background-tertiary); }
+  .nav-btn.primary { background:var(--color-background-info); color:var(--color-text-info); border-color:var(--color-border-info); }
+  .progress-bar { height:4px; background:var(--color-border-tertiary); border-radius:2px; margin-bottom:1.25rem; overflow:hidden; }
+  .progress-fill { height:100%; background:var(--color-text-info); border-radius:2px; transition:width .4s ease; }
+  .file-badge { display:inline-block; padding:2px 8px; background:var(--color-background-secondary); border:0.5px solid var(--color-border-secondary); border-radius:4px; font-family:var(--font-mono); font-size:11px; color:var(--color-text-secondary); margin:2px; }
+  .section-label { font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:.05em; color:var(--color-text-secondary); margin:1rem 0 6px; }
+  .stretch-tag { display:inline-block; padding:2px 8px; background:var(--color-background-warning); border-radius:10px; font-size:11px; color:var(--color-text-warning); margin-left:8px; }
+</style>
+
+<h2 class="sr-only">Real Estate RAG Project — Step by Step Guide</h2>
+
+<div style="margin-bottom:1rem;">
+  <div style="font-size:20px; font-weight:500; color:var(--color-text-primary); margin-bottom:4px;">🏠 Real Estate RAG Assistant</div>
+  <div style="font-size:13px; color:var(--color-text-secondary);">4-week project guide • Track your progress as you go</div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+
+<div class="step-nav" id="pills"></div>
+
+<div id="steps-container"></div>
+
+<script>
+const steps = [
+  {
+    title: "Setup & Install",
+    week: "Week 1, Day 1–2",
+    tasks: [
+      "Install Python 3.10+ if not already installed",
+      "Open Windsurf and create a new folder: real-estate-rag",
+      "Create a virtual environment inside the folder",
+      "Install all required libraries",
+      "Get a free Anthropic API key from console.anthropic.com",
+      "Create a .env file with your API key"
+    ],
+    content: `
+<div class="section-label">Windsurf Terminal commands (run one by one)</div>
+<code class="cmd">mkdir real-estate-rag && cd real-estate-rag</code>
+<code class="cmd">python -m venv venv</code>
+<code class="cmd">venv\\Scripts\\activate  &nbsp;# Windows</code>
+<code class="cmd">pip install langchain langchain-community chromadb anthropic pypdf streamlit python-dotenv sentence-transformers</code>
+
+<div class="section-label">Project folder structure</div>
+<div style="font-family:var(--font-mono);font-size:12px;line-height:2;color:var(--color-text-secondary);background:var(--color-background-secondary);padding:10px 14px;border-radius:var(--border-radius-md);">
+real-estate-rag/<br>
+├── <span style="color:var(--color-text-info)">documents/</span> &nbsp;&nbsp;&nbsp;&nbsp;← put your PDFs here<br>
+├── <span style="color:var(--color-text-info)">db/</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← ChromaDB will save here<br>
+├── <span style="color:var(--color-text-info)">ingest.py</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← loads PDFs into ChromaDB<br>
+├── <span style="color:var(--color-text-info)">rag.py</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← the RAG pipeline<br>
+├── <span style="color:var(--color-text-info)">app.py</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← Streamlit UI<br>
+└── <span style="color:var(--color-text-info)">.env</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← API keys (never share!)
+</div>
+
+<div class="section-label">.env file</div>
+<div class="code-block">ANTHROPIC_API_KEY=sk-ant-your-key-here</div>
+
+<div class="tip-box">⚠️ Add .env to your .gitignore file so your API key is never uploaded to GitHub</div>
+`
+  },
+  {
+    title: "Get Your Documents",
+    week: "Week 1, Day 3–4",
+    tasks: [
+      "Download MahaRERA Guidelines PDF from maharera.mahaonline.gov.in",
+      "Download Real Estate Regulation Act 2016 PDF (search Google)",
+      "Download one free Mumbai market report (JLL, Knight Frank, or Anarock)",
+      "Save all 3 PDFs into the documents/ folder",
+      "Rename files simply: rera_act.pdf, mahareraguidelines.pdf, market_report.pdf"
+    ],
+    content: `
+<div class="info-box">💡 You have 14 years of Real Estate experience — YOU know what documents matter. Pick documents that answer questions practitioners actually ask every day.</div>
+
+<div class="section-label">Recommended free document sources</div>
+<ul class="task-list" style="margin-bottom:0">
+  <li><i class="ti ti-external-link" style="font-size:16px;color:var(--color-text-info)" aria-hidden="true"></i><div><strong>MahaRERA</strong> — maharera.mahaonline.gov.in → Circulars & Guidelines</div></li>
+  <li><i class="ti ti-external-link" style="font-size:16px;color:var(--color-text-info)" aria-hidden="true"></i><div><strong>RERA Act 2016</strong> — Search "Real Estate Regulation Act 2016 PDF India"</div></li>
+  <li><i class="ti ti-external-link" style="font-size:16px;color:var(--color-text-info)" aria-hidden="true"></i><div><strong>JLL India Reports</strong> — jll.co.in → Research & News (free PDFs)</div></li>
+  <li><i class="ti ti-external-link" style="font-size:16px;color:var(--color-text-info)" aria-hidden="true"></i><div><strong>Anarock</strong> — anarock.com → Research reports (free)</div></li>
+</ul>
+
+<div class="section-label">Sample questions your app will answer</div>
+<div style="font-size:13px;color:var(--color-text-secondary);line-height:2;">
+  "What are RERA registration requirements for a developer?" <br>
+  "What is the penalty for project delay under RERA?" <br>
+  "What is the current average price per sqft in Mumbai suburbs?" <br>
+  "What documents does a buyer need for due diligence?"
+</div>
+`
+  },
+  {
+    title: "Build the Ingestion Pipeline",
+    week: "Week 2, Day 1–2",
+    tasks: [
+      "Create ingest.py in Windsurf",
+      "Paste and understand the ingestion code",
+      "Run the script — it should print chunk count and 'Stored successfully'",
+      "Check that a db/ folder was created with files inside",
+      "Test a similarity search — does it return relevant text?"
+    ],
+    content: `
+<div class="section-label">ingest.py — paste this into Windsurf</div>
+
+
+<code class="cmd">python ingest.py</code>
+
+<div class="success-box">✅ If you see chunk count + 3 search results printed, your ingestion pipeline works!</div>
+`
+  },
+  {
+    title: "Build the RAG Pipeline",
+    week: "Week 2, Day 3–5",
+    tasks: [
+      "Create rag.py in Windsurf",
+      "Paste the RAG pipeline code below",
+      "Test it in terminal — ask 3 real questions",
+      "Check that the answer includes source citations",
+      "Tune the prompt if answers feel too generic"
+    ],
+    content: `
+<div class="section-label">rag.py — paste this into Windsurf</div>
+<div class="code-block">from langchain_community.vectorstores import Chroma
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_anthropic import ChatAnthropic
+from langchain.chains import RetrievalQA
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+# Initialize embeddings and vector store
+embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+vectorstore = Chroma(persist_directory="./db", embedding_function=embeddings)
+
+# Initialize LLM
+llm = ChatAnthropic(model="claude-3-haiku-20240307", anthropic_api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+# Create RAG chain
+qa_chain = RetrievalQA.from_chain_type(
+    llm=llm,
+    chain_type="stuff",
+    retriever=vectorstore.as_retriever(search_kwargs={"k": 3}),
+    return_source_documents=True
+)
+
+# Test query
+query = input("Ask a question about real estate: ")
+result = qa_chain.invoke({"query": query})
+
+print(f"Answer: {result['result']}")
+print("\\nSources:")
+for doc in result['source_documents']:
+    print(f"- {doc.metadata.get('source', 'Unknown')}: {doc.page_content[:100]}...")
+</div>
+
+<code class="cmd">python rag.py</code>
+
+<div class="success-box">✅ If you get an answer with source citations, your RAG pipeline works!</div>
+`
+  },
+  {
+    title: "Interview Tips",
+    week: "Before Applying",
+    tasks: [
+      "Practice explaining the project in 2 minutes out loud",
+      "Know why you chose RAG over fine-tuning",
+      "Know what chunk_size and chunk_overlap do",
+      "Know what a vector embedding is (simple explanation)",
+      "Add project to your resume under a Projects section"
+    ],
+    content: `
+<div class="section-label">What interviewers will ask</div>
+
+<div style="margin-bottom:12px;">
+  <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">Q: Why RAG instead of fine-tuning?</div>
+  <div style="font-size:13px;color:var(--color-text-secondary);">A: "RAG is better when your data changes frequently — like new RERA circulars. Fine-tuning is expensive and you'd need to retrain every time the regulations update. RAG just re-ingests the new document."</div>
+</div>
+
+<div style="margin-bottom:12px;">
+  <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">Q: What is a vector embedding?</div>
+  <div style="font-size:13px;color:var(--color-text-secondary);">A: "A vector embedding converts text into a list of numbers that captures its meaning. Texts with similar meaning get similar numbers, so we can search by meaning — not just keywords."</div>
+</div>
+
+<div style="margin-bottom:12px;">
+  <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">Q: How would you scale this to production?</div>
+  <div style="font-size:13px;color:var(--color-text-secondary);">A: "Replace ChromaDB with Pinecone or Weaviate for scalability. Add a FastAPI layer over the RAG pipeline. Containerize with Docker. Deploy on Kubernetes — which I'm familiar with from my IBM/OpenShift work."</div>
+</div>
+
+<div style="margin-bottom:12px;">
+  <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">Q: What would you improve?</div>
+  <div style="font-size:13px;color:var(--color-text-secondary);">A: "Add a reranker to improve chunk relevance. Add query reformulation. Build an n8n agent on top to automate document monitoring and alerts when new RERA circulars are issued."</div>
+</div>
+
+<div class="success-box">🎯 Your 14 yrs Real Estate experience is your superpower here. Most AI engineers can't evaluate if the answers are correct — YOU can. Say that in the interview.</div>
+
+<button class="nav-btn primary" style="width:100%;margin-top:8px" onclick="sendPrompt('Help me prepare for an AI Engineer interview based on my Real Estate RAG project')">Prepare for interviews ↗</button>
+`
+  }
+];
+
+let current = 0;
+const checked = Array(steps.length).fill(null).map((_, i) => Array(steps[i].tasks.length).fill(false));
+
+function updateProgress() {
+  const total = checked.flat().length;
+  const done = checked.flat().filter(Boolean).length;
+  document.getElementById('prog').style.width = Math.round(done/total*100) + '%';
+}
+
+function renderPills() {
+  const c = document.getElementById('pills');
+  c.innerHTML = '';
+  steps.forEach((s, i) => {
+    const allDone = checked[i].every(Boolean);
+    const p = document.createElement('div');
+    p.className = 'step-pill' + (i === current ? ' active' : '') + (allDone ? ' done' : '');
+    p.textContent = (allDone ? '✓ ' : '') + (i+1) + '. ' + s.title;
+    p.onclick = () => { current = i; render(); };
+    c.appendChild(p);
+  });
+}
+
+function render() {
+  renderPills();
+  const c = document.getElementById('steps-container');
+  c.innerHTML = '';
+  const s = steps[current];
+  const card = document.createElement('div');
+  card.className = 'step-card visible';
+
+  let html = `<div class="step-header">
+    <div class="step-num">${current+1}</div>
+    <div><div class="step-title">${s.title}</div><div class="step-week">${s.week}</div></div>
+  </div>
+  <div class="section-label">Tasks to complete</div>
+  <ul class="task-list" id="tasklist">`;
+
+  s.tasks.forEach((t, i) => {
+    html += `<li>
+      <div class="task-check ${checked[current][i] ? 'checked' : ''}" onclick="toggleTask(${current},${i})" role="checkbox" aria-label="${t}"></div>
+      <span style="${checked[current][i] ? 'text-decoration:line-through;color:var(--color-text-secondary)' : ''}">${t}</span>
+    </li>`;
+  });
+
+  html += `</ul>${s.content}
+  <div class="nav-btns">
+    ${current > 0 ? `<button class="nav-btn" onclick="go(${current-1})">← Previous</button>` : '<span></span>'}
+    ${current < steps.length-1 ? `<button class="nav-btn primary" onclick="go(${current+1})">Next →</button>` : `<button class="nav-btn primary" onclick="sendPrompt('I finished the Real Estate RAG project. What should I do next?')">I\'m done! What\'s next? ↗</button>`}
+  </div>`;
+
+  card.innerHTML = html;
+  c.appendChild(card);
+}
+
+function toggleTask(step, task) {
+  checked[step][task] = !checked[step][task];
+  updateProgress();
+  render();
+}
+
+function go(i) {
+  current = i;
+  render();
+}
+
+render();
+updateProgress();
+</script>
