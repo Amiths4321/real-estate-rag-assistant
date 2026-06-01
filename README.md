@@ -85,3 +85,48 @@ expertise with hands-on AI engineering.
 LinkedIn: [your-linkedin-url]
 
 **1. Clone the repo**
+
+git clone https://github.com/YOUR-USERNAME/real-estate-rag-assistant.git
+cd real-estate-rag-assistant
+
+**2. Install dependencies**
+pip install -r requirements.txt
+
+**3. Add your PDF documents**
+Place your RERA / property PDFs inside the documents/ folder
+
+**4. Install Ollama and pull IBM Granite**
+ollama pull ibm/granite3.2-vision:2b
+
+**5. Run ingestion**
+python ingest.py
+
+**6. Launch the app**
+streamlit run app.py
+
+---
+
+## Architecture
+User Question
+│
+▼
+Streamlit UI (app.py)
+│
+▼
+RAG Pipeline (rag.py)
+│
+├── ChromaDB → finds top 4 relevant chunks
+│
+└── IBM Granite (Ollama) → generates answer with citations
+
+---
+
+## About the Author
+
+AI Engineer with 20+ years experience across Real Estate, IBM API 
+Integration, DevOps and Generative AI. This project combines domain 
+expertise with hands-on AI engineering.
+
+LinkedIn: [your-linkedin-url]
+
+
